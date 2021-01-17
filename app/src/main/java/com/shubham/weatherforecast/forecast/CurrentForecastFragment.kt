@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.shubham.weatherforecast.*
-import com.shubham.weatherforecast.details.ForecastDetailsActivity
+import com.shubham.weatherforecast.details.ForecastDetailsFragment
 
 
 class CurrentForecastFragment : Fragment() {
@@ -59,10 +59,7 @@ class CurrentForecastFragment : Fragment() {
     }
 
     private fun showForecastDetails(forecast:DailyForecast) {
-        val forcastDetailsIntent= Intent(requireContext(), ForecastDetailsActivity::class.java)
-        forcastDetailsIntent.putExtra("key_temp",forecast.temp)
-        forcastDetailsIntent.putExtra("key_description",forecast.description)
-        startActivity(forcastDetailsIntent)
+        appNavigator.navigateToForecastDetails(forecast)
     }
 
     companion object{

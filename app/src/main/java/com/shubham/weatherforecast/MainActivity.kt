@@ -1,24 +1,24 @@
 package com.shubham.weatherforecast
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.shubham.weatherforecast.details.ForecastDetailsActivity
-import com.shubham.weatherforecast.forecast.CurrentForecastFragment
-import com.shubham.weatherforecast.locations.LocationEntryFragment
+import android.widget.Toolbar
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.navArgs
+import androidx.navigation.ui.AppBarConfiguration
+import com.shubham.weatherforecast.details.ForecastDetailsFragmentArgs
+import com.shubham.weatherforecast.forecast.CurrentForecastFragmentDirections
+import com.shubham.weatherforecast.locations.LocationEntryFragmentDirections
+import androidx.navigation.ui.setupActionBarWithNavController
+
+
 
 class MainActivity : AppCompatActivity(),AppNavigator {
+
 
     private lateinit var tempDisplaySettingManager: TempDisplaySettingManager
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,8 +29,11 @@ class MainActivity : AppCompatActivity(),AppNavigator {
         tempDisplaySettingManager=TempDisplaySettingManager(this)
 
 
-       supportFragmentManager.beginTransaction().add(R.id.fragmentContainer,LocationEntryFragment())
-           .commit()
+        val navController = findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration= AppBarConfiguration(navController.graph)
+        findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController,appBarConfiguration)
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -50,11 +53,23 @@ class MainActivity : AppCompatActivity(),AppNavigator {
     }
 
     override fun navigateToCurrentForecast(zipcode: String) {
-        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer,CurrentForecastFragment.newInstance(zipcode)).commit()
+
+        val action=LocationEntryFragmentDirections.actionLocationEntryFragmentToCurrentForecastFragment()
+        findNavController(R.id.nav_host_fragment).navigate(action)
     }
 
     override fun navigateToLocationEntry() {
-        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer,LocationEntryFragment()).commit()
+
+        val action=CurrentForecastFragmentDirections.actionCurrentForecastFragmentToLocationEntryFragment()
+        findNavController(R.id.nav_host_fragment).navigate(action)
     }
 
+    override fun navigateToForecastDetails(forecast: DailyForecast) {
+        val action=CurrentForecastFragmentDirections.actionCurrentForecastFragmentToForecastDetailsFragment(forecast.temp,forecast.description)
+        findNavController(R.id.nav_host_fragment).navigate(action)
+
+    }
 }
+
+
+
